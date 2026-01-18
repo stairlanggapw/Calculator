@@ -1,6 +1,6 @@
-let nama = "User";
-console.log(nama);
-alert("Halo " + nama + ", selamat datang di website saya!");
+let nama = "Brother";
+// console.log(nama);
+alert("Hello " + nama + ", Welcome To My Website!");
 
 let runningTotal = 0;
 let buffer = "0";
@@ -9,14 +9,19 @@ let previusOperator = null;
 const screen = document.querySelector(".screen");
 
 function buttonClick(value) {
-    const symbols = ['C', '=', '←', '+', '-', '×', '÷'];
-    console.log("Value:", value); // Untuk debug
+    const symbols = ['C', '=', '←', '+', '-', '*', '/'];
+    const operators = ['+', '-', '*', '/'];
+    const numbers = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+    console.log("Value:", value); 
     if(symbols.includes(value)) {
         handleSymbol(value);
     }else {
         handleNumber(value);
     }
-    screen.innerText = buffer;
+    
+    if(!operators.includes(value)) {
+        screen.innerText = buffer;
+    }
 }
 
 function handleSymbol(symbol) {
@@ -30,9 +35,9 @@ function handleSymbol(symbol) {
             if(previusOperator === null) {
                 return;
             }
-            flushOperation(parseInt(buffer));
-            previusOperator = null;
+            flushOperation(parseFloat(buffer));
             buffer = runningTotal.toString();
+            previusOperator = null;
             runningTotal = 0;
             break;
         case '←':
@@ -44,25 +49,25 @@ function handleSymbol(symbol) {
             break;
         case '+':
         case '-':
-        case '×':
-        case '÷':
+        case '*':
+        case '/':
             handleMath(symbol);
             break;
     }           
 }
 
 function handleMath(symbol) {
-    if(buffer === "0") {
-        return;
-    }
-    const intBuffer = parseInt(buffer);
+    const intBuffer = parseFloat(buffer);
+    
     if(runningTotal === 0) {
         runningTotal = intBuffer;
-    }else if(previusOperator !== null) {
+    } else if(previusOperator !== null) {
         flushOperation(intBuffer);
     }
+    
     previusOperator = symbol;
     buffer = "0";
+    screen.innerText = symbol;  
 }
 
 function flushOperation(intBuffer) {
@@ -70,11 +75,12 @@ function flushOperation(intBuffer) {
         runningTotal += intBuffer;
     }else if(previusOperator === '-') {
         runningTotal -= intBuffer;
-    }else if(previusOperator === '×') {
+    }else if(previusOperator === '*') {
         runningTotal *= intBuffer;
-    }else if(previusOperator === '÷') {
+    }else if(previusOperator === '/') {
         runningTotal /= intBuffer;
     }
+    buffer = runningTotal.toString();
 }
 
 function handleNumber(numberString) {
